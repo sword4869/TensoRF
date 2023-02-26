@@ -37,11 +37,71 @@ class BlenderDataset(Dataset):
         return depth
     
     def read_meta(self):
-
+        '''
+        #==
+        [nerf_synthetic/lego/]
+        ├── transforms_test.json
+        ├── transforms_train.json
+        ├── transforms_val.json
+        ├── test
+        │   ├── r_0_depth_0001.png
+        │   ├── r_0_normal_0001.png
+        │   ├── r_0.png
+        │   ├── r_100_depth_0001.png
+        │   ├── r_100_normal_0001.png
+        │   ├── r_100.png
+        ├── train
+        │   ├── r_0.png
+        │   ├── r_1.png
+        │   ├── r_10.png
+        │   ├── r_11.png
+        └── val
+            ├── r_0.png
+            ├── r_10.png
+            ├── r_11.png
+        #==
+        #==
+        [transforms_train.json]
+        "camera_angle_x": 0.6911112070083618,
+        "frames": [
+            {
+                "file_path": "./train/r_0",
+                "rotation": 0.012566370614359171,
+                "transform_matrix": [
+                    [
+                        -0.9999021887779236,
+                        0.004192245192825794,
+                        -0.013345719315111637,
+                        -0.05379832163453102
+                    ],
+                    [
+                        -0.013988681137561798,
+                        -0.2996590733528137,
+                        0.95394366979599,
+                        3.845470428466797
+                    ],
+                    [
+                        -4.656612873077393e-10,
+                        0.9540371894836426,
+                        0.29968830943107605,
+                        1.2080823183059692
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+        #==
+        '''
+        #== `self.split` is `train` or `test` which is corresponding to `transforms_test.json` and `transforms_test.json`.
         with open(os.path.join(self.root_dir, f"transforms_{self.split}.json"), 'r') as f:
             self.meta = json.load(f)
 
         w, h = self.img_wh
+        #== `800` is the width and the height of images in `test`, `train` and `val`.
         self.focal = 0.5 * 800 / np.tan(0.5 * self.meta['camera_angle_x'])  # original focal length
         self.focal *= self.img_wh[0] / 800  # modify focal length to match size self.img_wh
 
